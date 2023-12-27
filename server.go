@@ -23,6 +23,8 @@ func serverEntry(apiConfig *Config) {
 	mainRouter.Use(cors.Handler(corsOptions))
 	v1Router.Get("/err", readinessErr)
 	v1Router.Get("/readiness", readinessSuccess)
+	v1Router.Post("/users", apiConfig.postUsersHandler)
+	v1Router.Get("/users", apiConfig.getUsersHandler)
 	mainRouter.Mount("/v1", v1Router)
 
 	srv := &http.Server{
