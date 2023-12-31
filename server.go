@@ -8,7 +8,7 @@ import (
 	"github.com/go-chi/cors"
 )
 
-func serverEntry(apiConfig *Config) {
+func serverEntry(cfg *Config) {
 	// Define CORS options
 	corsOptions := cors.Options{
 		AllowedOrigins:   []string{"*"}, // You can customize this based on your needs
@@ -23,12 +23,18 @@ func serverEntry(apiConfig *Config) {
 	mainRouter.Use(cors.Handler(corsOptions))
 	v1Router.Get("/err", readinessErr)
 	v1Router.Get("/readiness", readinessSuccess)
-	v1Router.Post("/users", apiConfig.postUsersHandler)
-	v1Router.Get("/users", apiConfig.getUsersHandler)
+	v1Router.Post("/users", cfg.postUsersHandler)
+	v1Router.Get("/users", cfg.middlewareAuth(cfg.getUsersHandler))
+	v1Router.Post("/feeds", cfg.middlewareAuth(cfg.postFeedsHandler))
+	v1Router.Post("/feed_follows", cfg.middlewareAuth(cfg.postFeedFollowsHandler))
+	v1Router.Get("/feed_follows/{feedFollowID}", cfg.middlewareAuth(cfg.getFeedFollowsHandler))
+
+	v1Router.Delete("/feed_follows", cfg.middlewareAuth(cfg.deleteFeedFollowsHandler))
+	v1Router.Get("/feeds", cfg.getFeedsHandler)
 	mainRouter.Mount("/v1", v1Router)
 
 	srv := &http.Server{
-		Addr:    ":" + apiConfig.PORT,
+		Addr:    ":" + cfg.PORT,
 		Handler: mainRouter,
 	}
 	log.Printf("Serving on port: %s\n", srv.Addr)

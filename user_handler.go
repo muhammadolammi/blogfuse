@@ -7,11 +7,10 @@ import (
 	"time"
 
 	"github.com/google/uuid"
-	auth "github.com/muhammadolammi/blogfuse/internal"
 	"github.com/muhammadolammi/blogfuse/internal/database"
 )
 
-func (apiConfig *Config) postUsersHandler(w http.ResponseWriter, r *http.Request) {
+func (cfg *Config) postUsersHandler(w http.ResponseWriter, r *http.Request) {
 	type Parameter struct {
 		Name string `json:"name"`
 	}
@@ -28,7 +27,7 @@ func (apiConfig *Config) postUsersHandler(w http.ResponseWriter, r *http.Request
 		UpdatedAt: time.Now(),
 		Name:      params.Name,
 	}
-	dbUser, err := apiConfig.DB.CreateUser(r.Context(), userParam)
+	dbUser, err := cfg.DB.CreateUser(r.Context(), userParam)
 	if err != nil {
 		respondWithError(w, 500, fmt.Sprintf("error creating user. err : %v", err.Error()))
 		return
@@ -37,17 +36,7 @@ func (apiConfig *Config) postUsersHandler(w http.ResponseWriter, r *http.Request
 	respondWithJson(w, 200, user)
 }
 
-func (apiConfig *Config) getUsersHandler(w http.ResponseWriter, r *http.Request) {
-	apikey, err := auth.GetAPIKey(r.Header)
-	if err != nil {
-		respondWithError(w, 500, err.Error())
-		return
-	}
-	dbUser, err := apiConfig.DB.GetUserByAPIKey(r.Context(), apikey)
-	if err != nil {
-		respondWithError(w, 500, err.Error())
-		return
-	}
-	user := databaseUserToUser(dbUser)
-	respondWithJson(w, 200, user)
+func (cfg *Config) getUsersHandler(w http.ResponseWriter, r *http.Request, user database.User) {
+
+	respondWithJson(w, 200, databaseUserToUser(user))
 }
