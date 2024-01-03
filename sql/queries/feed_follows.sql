@@ -4,10 +4,9 @@ VALUES ($1, $2, $3, $4, $5)
 RETURNING *;
 
 
--- name: Unfollow :one
+-- name: Unfollow :exec
 DELETE FROM feed_follows 
-WHERE feed_id = $1 AND user_id = $2
-RETURNING *;
+WHERE feed_id = $1 AND user_id = $2;
 
 
 -- name: GetFeedFollows :many

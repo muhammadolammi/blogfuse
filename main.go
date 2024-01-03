@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"log"
 	"os"
+	"time"
 
 	"github.com/joho/godotenv"
 	_ "github.com/lib/pq"
@@ -44,6 +45,21 @@ func main() {
 		PORT: port,
 		DB:   dbQueries,
 	}
+
+	// rssFeed, err := urlToRssFeed("https://blog.boot.dev/index.xml")
+	// if err != nil {
+	// 	log.Println("there is an error turning feed url to rssFeed, err:", err)
+	// 	return
+	// }
+	// for _, item := range rssFeed.Channel.Item {
+	// 	log.Println(item.PubDate)
+
+	//}
+
+	// if wait := true; wait {
+	// 	return
+	// }
+	go startScrapping(dbQueries, 10, time.Minute)
 
 	serverEntry(&apiConfig)
 }

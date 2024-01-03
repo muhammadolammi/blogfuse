@@ -6,7 +6,6 @@ import (
 	"net/http"
 	"time"
 
-	"github.com/go-chi/chi/v5"
 	"github.com/google/uuid"
 	"github.com/muhammadolammi/blogfuse/internal/database"
 )
@@ -24,8 +23,8 @@ func (cfg *Config) postFeedFollowsHandler(w http.ResponseWriter, r *http.Request
 	}
 	followFeedParam := database.FollowFeedParams{
 		ID:        uuid.New(),
-		CreatedAt: time.Now(),
-		UpdatedAt: time.Now(),
+		CreatedAt: time.Now().UTC(),
+		UpdatedAt: time.Now().UTC(),
 		FeedID:    params.FeedId,
 		UserID:    user.ID,
 	}
@@ -61,17 +60,8 @@ func (cfg *Config) deleteFeedFollowsHandler(w http.ResponseWriter, r *http.Reque
 }
 
 func (cfg *Config) getFeedFollowsHandler(w http.ResponseWriter, r *http.Request, user database.User) {
-	feedId := chi.URLParam(r, "feedFollowID")
-	parsedFeedFollowID, err := uuid.Parse(feedId)
-	if err != nil {
-		respondWithError(w, http.StatusBadRequest, fmt.Sprintf("invalid UUID: %v", err))
-		return
-	}
-	feedFollowsParam := database.GetFeedFollowsParams{
-		FeedID: parsedFeedFollowID,
-		UserID: user.ID,
-	}
-	feeds, err := cfg.DB.GetFeedFollows(r.Context(), feedFollowsParam)
+
+	feeds, err := cfg.DB.GetFeedFollows(r.Context(), user.ID)
 	if err != nil {
 		respondWithError(w, 500, fmt.Sprintf("error getting feeds: %v", err))
 		return

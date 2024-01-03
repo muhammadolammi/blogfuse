@@ -412,7 +412,7 @@ func dial(ctx context.Context, d Dialer, o values) (net.Conn, error) {
 		// procedure, so we both use a timeout for the TCP connection
 		// establishment and set a deadline for doing the initial handshake.
 		// The deadline is then reset after startup() is done.
-		deadline := time.Now().Add(duration)
+		deadline := time.Now().UTC().Add(duration)
 		var conn net.Conn
 		if dctx, ok := d.(DialerContext); ok {
 			ctx, cancel := context.WithTimeout(ctx, duration)

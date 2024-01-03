@@ -31,6 +31,7 @@ func serverEntry(cfg *Config) {
 
 	v1Router.Delete("/feed_follows", cfg.middlewareAuth(cfg.deleteFeedFollowsHandler))
 	v1Router.Get("/feeds", cfg.getFeedsHandler)
+	v1Router.Get("/posts", cfg.middlewareAuth(cfg.getPostsHandler))
 	mainRouter.Mount("/v1", v1Router)
 
 	srv := &http.Server{

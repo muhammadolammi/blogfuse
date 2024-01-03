@@ -24,8 +24,8 @@ func (cfg *Config) postFeedsHandler(w http.ResponseWriter, r *http.Request, user
 	}
 	feedParam := database.CreateFeedParams{
 		ID:        uuid.New(),
-		CreatedAt: time.Now(),
-		UpdatedAt: time.Now(),
+		CreatedAt: time.Now().UTC().UTC(),
+		UpdatedAt: time.Now().UTC(),
 		Name:      params.Name,
 		Url:       params.Url,
 		UserID:    user.ID,
@@ -37,8 +37,8 @@ func (cfg *Config) postFeedsHandler(w http.ResponseWriter, r *http.Request, user
 	}
 	followFeedParam := database.FollowFeedParams{
 		ID:        uuid.New(),
-		CreatedAt: time.Now(),
-		UpdatedAt: time.Now(),
+		CreatedAt: time.Now().UTC(),
+		UpdatedAt: time.Now().UTC(),
 		FeedID:    feed.ID,
 		UserID:    user.ID,
 	}

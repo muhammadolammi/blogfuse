@@ -23,8 +23,8 @@ func (cfg *Config) postUsersHandler(w http.ResponseWriter, r *http.Request) {
 	}
 	userParam := database.CreateUserParams{
 		ID:        uuid.New(),
-		CreatedAt: time.Now(),
-		UpdatedAt: time.Now(),
+		CreatedAt: time.Now().UTC(),
+		UpdatedAt: time.Now().UTC(),
 		Name:      params.Name,
 	}
 	dbUser, err := cfg.DB.CreateUser(r.Context(), userParam)
